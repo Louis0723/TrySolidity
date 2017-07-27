@@ -80,19 +80,19 @@ contract jianfe {
                 uint256 halfAmount = ((amount-firstPen)/2);
                 initiator.transfer(firstPen + halfAmount);
                 for (uint256 goodIndex = 0; goodIndex < goodsCount; goodIndex++) {
-                    gooder[goodIndex].transfer( halfAmount*(goodProportion[gooder[goodIndex]]/goodAmount) );
+                    gooder[goodIndex].transfer( halfAmount*goodProportion[gooder[goodIndex]]/goodAmount );
                 }
             }else {
                 settleEvent(amount,now,"bad");
                 for (uint256 indexBad = 0; indexBad < badsCount; indexBad++) {
-                    bader[indexBad].transfer( amount*(badProportion[bader[indexBad]]/badAmount) );
+                    bader[indexBad].transfer( amount*badProportion[bader[indexBad]]/badAmount );
                 }
             }
-            lock = true;
-            initiator.transfer(this.balance);
             if(msg.value > 0){
                 msg.sender.transfer(msg.value); //歸還多餘的幣
             }
+            selfdestruct(initiator);
+            lock = true;
         }
     }
 }
