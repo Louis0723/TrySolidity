@@ -48,8 +48,8 @@ contract jianfe {
             goodProportion[msg.sender] += msg.value;
         }
         else {
-            gooder[goodCount] = msg.sender;
-            goodCount += 1;
+            gooder[goodsCount] = msg.sender;
+            goodsCount += 1;
             goodProportion[msg.sender] = msg.value;
         }
     }
@@ -60,8 +60,8 @@ contract jianfe {
             badProportion[msg.sender] += msg.value;
         }
         else {
-            bader[badCount] = msg.sender;
-            badCount += 1;
+            bader[badsCount] = msg.sender;
+            badsCount += 1;
             badProportion[msg.sender] = msg.value;
         }
     }
@@ -79,11 +79,11 @@ contract jianfe {
             if (lastWeight <= targetWeight) {
                 uint256 halfAmount = ((amount-firstPen)/2);
                 initiator.transfer(firstPen + halfAmount);
-                for (uint256 goodIndex = 0; goodIndex < goodCount; goodIndex++) {
+                for (uint256 goodIndex = 0; goodIndex < goodsCount; goodIndex++) {
                     gooder[goodIndex].transfer( halfAmount*(goodProportion[gooder[goodIndex]]/goodAmount) );
                 }
             }else {
-                for (uint256 indexBad = 0; indexBad < badCount; indexBad++) {
+                for (uint256 indexBad = 0; indexBad < badsCount; indexBad++) {
                     bader[indexBad].transfer( amount*(badProportion[bader[indexBad]]/badAmount) );
                 }
             }
