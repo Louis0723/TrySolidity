@@ -17,14 +17,14 @@ contract jianfe {
     mapping (address => uint256) public badProportion; //看壞人權重
     bool public lock = false; //結算鎖
     event act(address people,uint256 time); //動作事件
-    event settleEvent(uint256 amount,uint256 time);//結算事件
+    event settleEvent(uint256 amount,uint256 time,string);//結算事件
 
     modifier timeout() { //檢查超時 如超時->結算
         act(msg.sender,now);
         if(now <= time * 1 seconds) {
         _;
         }else {
-            this.settle();
+            settle();
         }
     }
     modifier toRaise() { //檢查是否結算 否->繼續累計
@@ -46,8 +46,7 @@ contract jianfe {
         goodAmount += msg.value;
         if(goodProportion[msg.sender] > 0) {
             goodProportion[msg.sender] += msg.value;
-        }
-        else {
+        }else {
             gooder[goodsCount] = msg.sender;
             goodsCount += 1;
             goodProportion[msg.sender] = msg.value;
@@ -58,36 +57,42 @@ contract jianfe {
         badAmount += msg.value;
         if(badProportion[msg.sender] > 0) {
             badProportion[msg.sender] += msg.value;
-        }
-        else {
+        }else {
             bader[badsCount] = msg.sender;
             badsCount += 1;
             badProportion[msg.sender] = msg.value;
         }
     }
 
-    function recordWeight(int8 _lastWeight) { //記錄體重
-        lastWeight = _lastWeight;
-        if (lastWeight <= targetWeight) {
-            this.settle();
+    function recordWeight(int8 _lastWeight) timeout() { //記錄體重
+        if(initiator==msg.sender){
+            lastWeight = _lastWeight;
+            if (lastWeight <= targetWeight) {
+                settle();
+            }
         }
     }
     
-    function settle() external { //結算
+    function settle() private{ //結算
         if(lock != true) {
-            settleEvent(amount,now);
             if (lastWeight <= targetWeight) {
+                settleEvent(amount,now,"good");
                 uint256 halfAmount = ((amount-firstPen)/2);
                 initiator.transfer(firstPen + halfAmount);
                 for (uint256 goodIndex = 0; goodIndex < goodsCount; goodIndex++) {
                     gooder[goodIndex].transfer( halfAmount*(goodProportion[gooder[goodIndex]]/goodAmount) );
                 }
             }else {
+                settleEvent(amount,now,"bad");
                 for (uint256 indexBad = 0; indexBad < badsCount; indexBad++) {
                     bader[indexBad].transfer( amount*(badProportion[bader[indexBad]]/badAmount) );
                 }
             }
             lock = true;
+            initiator.transfer(this.balance);
+            if(msg.value > 0){
+                msg.sender.transfer(msg.value); //歸還多餘的幣
+            }
         }
     }
 }
@@ -104,7 +109,6 @@ contract biyezhuanti {
     }
 
     function deleteContract(address sender) { //刪除合約
-        jianfe(contractMap[sender]).settle();
         delete contractMap[sender];
     }
 }
