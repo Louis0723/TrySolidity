@@ -58,7 +58,7 @@ contract jianfe {
     }
 
     function bad() timeout toRaise payable { 
-        badAmount += += msg.value;
+        badAmount += msg.value;
         if(badProportion[msg.sender] > 0) {
             badProportion[msg.sender] += msg.value;
         }else {
