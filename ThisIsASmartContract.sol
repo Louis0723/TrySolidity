@@ -99,17 +99,11 @@ contract jianfe {
 contract biyezhuanti {
     mapping (address => address) public contractMap;
     event createContractEvent(address jianfeAddress ,uint256 money ,uint time);
-    event deleteContractEvent(address jianfeAddress ,uint256 money ,uint time);
 
     function createContract(int8 _targetWeight ,int8 _lastWeight ,uint _time) payable { //建立合約
         if( _targetWeight != 0 &&  msg.value != 0) {
             contractMap[msg.sender] = (new jianfe).value( msg.value )(msg.sender ,_targetWeight , _lastWeight , _time ) ;
             createContractEvent( contractMap[msg.sender] ,msg.value , _time);
         }
-    }
-
-    function deleteContract(address sender) { //刪除合約
-        jianfe(contractMap[sender]).settle() ;
-        delete contractMap[sender];
     }
 }
