@@ -1,0 +1,22 @@
+{
+  "name": "tool",
+  "version": "0.0.0",
+  "description": "mytool",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lursun/someTool.git"
+  },
+  "author": "lursun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lursun/someTool/issues"
+  },
+  "homepage": "https://github.com/Lursun/someTool#readme",
+  "dependencies": {
+    "socket.io": "^2.0.3",
+    "web3": "0.20.1"
+  }
+}
