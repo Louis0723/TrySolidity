@@ -95,6 +95,9 @@ module.exports=function(app){
         }
         money+=zero18;
 
+        let web3=getWeb3();
+        data=contractMap[contractFrom].good.getData()
+        web3.eth.sendTransaction({to:contractMap[contractFrom].address,from:web3.getAccount(accountID),data:data,value:money,gas:5999999})
         console.log("good");
         res.send('good');
     })
@@ -109,6 +112,9 @@ module.exports=function(app){
         }
         money+=zero18;
 
+        let web3=getWeb3();
+        data=contractMap[contractFrom].bad.getData()
+        web3.eth.sendTransaction({to:contractMap[contractFrom].address,from:web3.getAccount(accountID),data:data,value:money,gas:5999999})
         console.log("bad");
         res.send('bad');
     })
@@ -117,19 +123,30 @@ module.exports=function(app){
         let accountID=req.param("accountID");
         let weight=req.param("weight");
         if(accountID===undefined || weight===undefined ){
-            res.send('no input accountID or money');
+            res.send('no input accountID or weight');
             return;
         }
-        
+
+        let web3=getWeb3();
+        data=contractMap[contractFrom].recordWeight.getData(parseInt(weight))
+        web3.eth.sendTransaction({to:contractMap[contractFrom].address,from:web3.getAccount(accountID),data:data,gas:5999999})
         console.log("recordWeight");
         res.send('recordWeight');
     }
     app.get(/^\/settle/, function(req, res) {
         if (loginCheck(req,res)) return
         let account=req.param("accountID");
-        let contractAddress=req.param("contractAddress");
-        delete contractMap[accountID];
+        let contractFrom=req.param("contractFrom");
+        if(accountID===undefined || contractFrom===undefined ){
+            res.send('no input accountID or contractFrom');
+            return;
+        }
 
+
+        let web3=getWeb3();
+        data=contractMap[contractFrom].settle.getData()
+        web3.eth.sendTransaction({to:contractMap[contractFrom].address,from:web3.getAccount(accountID),data:data,gas:5999999})
+        delete contractMap[contractFrom];
         console.log("settle");
         res.send('settle');
     })
