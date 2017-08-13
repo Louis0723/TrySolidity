@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
 contract jianfe {
     int8 public targetWeight = 0; //目標體重
@@ -14,8 +14,8 @@ contract jianfe {
     mapping (uint => address) public bader; //看壞人
     mapping (address => uint256) public goodProportion; //看好個人總數
     mapping (address => uint256) public badProportion; //看壞個人總數
-    event act(address people,uint256 time); //動作事件
-    event settleEvent(uint256 amount,uint256 time,string); //結算事件
+    event act(address _people,uint256 _time); //動作事件
+    event settleEvent(uint256 _amount,uint256 _time,string _result); //結算事件
 
     modifier timeout() { //判斷是否超時 => 結算
         act(msg.sender,now);
@@ -98,7 +98,7 @@ contract jianfe {
 
 contract biyezhuanti {
     mapping (address => address) public contractMap;
-    event createContractEvent(address jianfeAddress ,uint256 money ,uint time);
+    event createContractEvent(address _jianfeAddress ,uint256 _money ,uint _time);
 
     function createContract(int8 _targetWeight ,int8 _lastWeight ,uint _time) payable { //建立合約
         if( _targetWeight != 0 &&  msg.value != 0) {
