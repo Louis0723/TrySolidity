@@ -33,6 +33,15 @@ module.exports=function(app){
     app.get(/^\/$/, function(req, res) {
         res.send(JSON.stringify(contractMap));
     })
+    app.get(/^\/balance/, function(req, res) {
+        let accountID=req.param("accountID");
+        if(accountID===undefined){
+            res.send('no input accountID');
+            return;
+        }
+        let web3=getWeb3();
+        res.send( web3.eth.getBalance(accountID) );
+    })
     app.get(/^\/createAccount/, function(req, res) {
         let web3=getWeb3();
         let newAccount = web3.personal.newAccount()
