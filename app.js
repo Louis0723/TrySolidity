@@ -33,7 +33,7 @@ module.exports=function(app){
     app.get(/^\/$/, function(req, res) {
         res.send(JSON.stringify(contractMap));
     })
-    app.get(/^\/balance/, function(req, res) {
+    app.get(/^\/getBalance/, function(req, res) {
         let accountID=req.param("accountID");
         if(accountID===undefined){
             res.send('no input accountID');
